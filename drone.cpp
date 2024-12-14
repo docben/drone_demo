@@ -8,7 +8,7 @@ Drone::Drone(const QString &n,QWidget *parent)
 
     status=landed;
     speed=0;
-    power=maxPower;
+    power=maxPower/2.0;
     V.set(0,0);
     ForceCollision.set(0,0);
     position=Vector2D(50,50);
@@ -84,16 +84,30 @@ void Drone::resizeEvent(QResizeEvent *event) {
     powerPB->setGeometry(rect);
 }
 
-void Drone::update(double dt,int steps) {
-    if (status==landed) return;
+void Drone::update(double dt) {
+    if (status==landed) {
+        power+=dt*chargingSpeed;
+        if (power>maxPower) {
+            power=maxPower;
+        }
+        powerPB->setValue(power);
+        repaint();
+        return;
+    }
 
     if (status==takeoff) {
         height+=dt*takeoffSpeed;
         if (height>=hoveringHeight) {
             height=hoveringHeight;
             status=hovering;
-            repaint();
         }
+        power-=dt*powerConsumption;
+        if (power<20+powerConsumption/takeoffSpeed) {
+            status=landing;
+            speed=0;
+        }
+        powerPB->setValue(power);
+        repaint();
         return;
     }
 
@@ -103,8 +117,10 @@ void Drone::update(double dt,int steps) {
             height=0;
             status=landed;
             showCollision=false;
-            repaint();
         }
+        power-=dt*powerConsumption;
+        powerPB->setValue(power);
+        repaint();
         return;
     }
 
@@ -112,18 +128,10 @@ void Drone::update(double dt,int steps) {
         Vector2D toGoal=goalPosition-position;
         double distance = toGoal.length();
 
-        dt/=double(steps);
         double damp= 1-dt*(1-damping);
-        for (int i=0; i<steps; i++) {
-            toGoal=goalPosition-position;
-            distance = toGoal.length();
-            V = damp*V+((power*dt/distance)*toGoal)+dt*ForceCollision;
-            position += dt*V;
-        }
+        V = damp*V+((maxPower*dt/distance)*toGoal)+dt*ForceCollision;
+        position += dt*V;
         speed=V.length();
-        /*if (speed>maxSpeed) {
-          V = (maxSpeed/speed)*V;
-        }*/
         Vector2D Vn = (1.0/speed)*V;
         if (Vn.y==0) {
             if (Vn.x>0) {
@@ -142,6 +150,13 @@ void Drone::update(double dt,int steps) {
             status=landing;
         }
         speedPB->setValue(speed);
+        power-=dt*powerConsumption;
+        if (power<20+powerConsumption/takeoffSpeed) {
+            speed=0;
+            V.set(0,0);
+            status=landing;
+        }
+        powerPB->setValue(power);
     }
     repaint();
 }

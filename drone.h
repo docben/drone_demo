@@ -16,6 +16,8 @@ public:
     const double hoveringHeight=5; ///< units
     const double coefCollision=1000; ///< coefficient for collision avoidment
     const double damping=0.2;        ///< damping for motion simulation
+    const double chargingSpeed=10;   ///< speed of charging (power/s)
+    const double powerConsumption=5; ///< speed of consumption (power/s)
     enum droneStatus { landed,takeoff,landing,hovering,turning,flying};
     /**
      * @brief Drone constructor
@@ -74,7 +76,7 @@ public:
     void paintEvent(QPaintEvent*) override;
     void resizeEvent(QResizeEvent *event) override;
 
-    void update(double dt,int steps);
+    void update(double dt);
     void initCollision();
     void addCollision(const Vector2D& A,float threshold);
     bool hasCollision() { return showCollision; }

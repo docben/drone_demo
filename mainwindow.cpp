@@ -43,30 +43,32 @@ void MainWindow::on_actionQuit_triggered()
 
 void MainWindow::update() {
     static int last=elapsedTimer.elapsed();
-    static int steps=1000;
+    static int steps=5;
     int current=elapsedTimer.elapsed();
-    int dt=current-last;
-    // update positions of drones
-    for (auto &drone:mapDrones) {
-        // detect collisions between drone and other flying drones
-        if (drone->getStatus()!=Drone::landed) {
-            drone->initCollision();
-            for (auto &obs:mapDrones) {
-                if (obs->getStatus()!=Drone::landed && obs->getName()!=drone->getName()) {
-                    Vector2D B=obs->getPosition();
-                    drone->addCollision(B,ui->widget->droneCollisionDistance);
+    double dt=(current-last)/(1000.0*steps);
+    for (int step=0; step<steps; step++) {
+        // update positions of drones
+        for (auto &drone:mapDrones) {
+            // detect collisions between drone and other flying drones
+            if (drone->getStatus()!=Drone::landed) {
+                drone->initCollision();
+                for (auto &obs:mapDrones) {
+                    if (obs->getStatus()!=Drone::landed && obs->getName()!=drone->getName()) {
+                        Vector2D B=obs->getPosition();
+                        drone->addCollision(B,ui->widget->droneCollisionDistance);
+                    }
                 }
             }
-            drone->update(dt/1000.0,steps);
+            drone->update(dt);
         }
     }
     int d = elapsedTimer.elapsed()-current;
-    ui->statusbar->showMessage("duree:"+QString::number(d)+" steps="+QString::number(steps)+ " freq="+QString::number(dt));
+    ui->statusbar->showMessage("duree:"+QString::number(d)+" steps="+QString::number(steps));
     if (d>90) {
         steps/=2;
     } else {
 
-        if (steps<10000) steps+=20;
+        if (steps<10) steps++;
     }
     last=current;
     ui->widget->repaint();
