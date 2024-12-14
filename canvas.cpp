@@ -23,11 +23,24 @@ void Canvas::paintEvent(QPaintEvent *) {
 
         for (auto &drone:*mapDrones) {
             painter.save();
+            // place and orient the drone
             painter.translate(drone->getPosition().x,drone->getPosition().y);
             painter.rotate(drone->getAzimut());
             painter.drawImage(rect,droneImg);
+            // light leds if flying
+            if (drone->getStatus()!=Drone::landed) {
+                painter.setPen(Qt::NoPen);
+                painter.setBrush(Qt::red);
+                painter.drawEllipse((-185.0/511.0)*droneIconSize,(-185.0/511.0)*droneIconSize,(65.0/511.0)*droneIconSize,(65.0/511.0)*droneIconSize);
+                painter.drawEllipse((115.0/511.0)*droneIconSize,(-185.0/511.0)*droneIconSize,(65.0/511.0)*droneIconSize,(65.0/511.0)*droneIconSize);
+                painter.setBrush(Qt::green);
+                painter.drawEllipse((-185.0/511.0)*droneIconSize,(115.0/511.0)*droneIconSize,(70.0/511.0)*droneIconSize,(70.0/511.0)*droneIconSize);
+                painter.drawEllipse((115.0/511.0)*droneIconSize,(115.0/511.0)*droneIconSize,(70.0/511.0)*droneIconSize,(70.0/511.0)*droneIconSize);
+            }
+            // draw collision detector
             if (drone->hasCollision()) {
                 painter.setPen(penCol);
+                painter.setBrush(Qt::NoBrush);
                 painter.drawEllipse(rectCol);
             }
             painter.restore();

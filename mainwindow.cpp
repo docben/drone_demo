@@ -8,14 +8,16 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    const Vector2D tabPos[5]={{60,80},{400,700},{50,250},{800,800},{700,50}};
+    /* preset initial positions of the drones */
+    const QVector<Vector2D> tabPos={{60,80},{400,700},{50,250},{800,800},{700,50}};
 
-    for (int i=0; i<5; i++) {
+    int n=0;
+    for (auto &pos:tabPos) {
         QListWidgetItem *LWitems=new QListWidgetItem(ui->listDronesInfo);
         ui->listDronesInfo->addItem(LWitems);
-        QString name="Drone"+QString::number(i+1);
+        QString name="Drone"+QString::number(++n);
         mapDrones[name]=new Drone(name);
-        mapDrones[name]->setInitialPosition(tabPos[i]);
+        mapDrones[name]->setInitialPosition(pos);
         ui->listDronesInfo->setItemWidget(LWitems,mapDrones[name]);
     }
 
@@ -46,7 +48,7 @@ void MainWindow::update() {
     int dt=current-last;
     // update positions of drones
     for (auto &drone:mapDrones) {
-        // detect collisions between drones
+        // detect collisions between drone and other flying drones
         if (drone->getStatus()!=Drone::landed) {
             drone->initCollision();
             for (auto &obs:mapDrones) {
