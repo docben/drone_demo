@@ -1,5 +1,5 @@
 /**
- * @abstract Drone_demo project
+ * @brief Drone_demo project
  * @author B.Piranda
  * @date dec. 2024
  **/
