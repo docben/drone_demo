@@ -1,3 +1,8 @@
+/**
+ * @abstract Drone_demo project
+ * @author B.Piranda
+ * @date dec. 2024
+ **/
 #ifndef DRONE_H
 #define DRONE_H
 
@@ -72,13 +77,29 @@ public:
     /** * @return the angle in degree
     */
     inline double getAzimut() { return azimut; }
-
+    /**
+     * @brief get the Power rank between 0 and 100
+     * @return the rank
+     */
+    inline double getPower() { return 100.0*power/maxPower; }
     void paintEvent(QPaintEvent*) override;
     void resizeEvent(QResizeEvent *event) override;
 
     void update(double dt);
+    /**
+     * @brief Prepare data for collision detections
+     */
     void initCollision();
+    /**
+     * @brief Add a collision force
+     * @param A: position of the other drone to test
+     * @param threshold: distance of collision detection
+     */
     void addCollision(const Vector2D& A,float threshold);
+    /**
+     * @brief Get if a collision has occurred
+     * @return true if collision
+     */
     bool hasCollision() { return showCollision; }
 signals:
 

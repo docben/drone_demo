@@ -1,3 +1,8 @@
+/**
+ * @abstract Drone_demo project
+ * @author B.Piranda
+ * @date dec. 2024
+ **/
 #ifndef VECTOR2D_H
 #define VECTOR2D_H
 
@@ -15,7 +20,7 @@ public:
      * @param p_x: x component
      * @param p_y: y component
      */
-    void set(double p_x,double p_y) { x=p_x; y=p_y; }
+    void set(float p_x,float p_y) { x=p_x; y=p_y; }
     /**
      * @brief length: return the length (or the norm) of the vector
      * @return the length
@@ -27,7 +32,7 @@ public:
      * @brief normalize: change the current vector to a vector with the same direction but a norme equal to 1
      */
     void normalize() {
-        float l=length();
+        float l=float(length());
         x/=l;
         y/=l;
     }
@@ -36,7 +41,7 @@ public:
      * @return the orthonormed vector
      */
     Vector2D orthoNormed() const {
-        float l=length();
+        float l=float(length());
         return Vector2D(y/l,-x/l);
     }
     /**

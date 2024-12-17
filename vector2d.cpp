@@ -1,7 +1,7 @@
 #include "vector2d.h"
 
 const Vector2D operator *(double a,const Vector2D &v) {
-    return Vector2D(a*v.x,a*v.y);
+    return Vector2D(float(a*v.x),float(a*v.y));
 }
 
  double operator *(const Vector2D &u,const Vector2D &v) {

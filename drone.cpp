@@ -77,7 +77,7 @@ void Drone::paintEvent(QPaintEvent *) {
     }
 }
 
-void Drone::resizeEvent(QResizeEvent *event) {
+void Drone::resizeEvent(QResizeEvent *) {
     QRect rect(compasSize+5,0,width()-compasSize-5,compasSize/2);
     speedPB->setGeometry(rect);
     rect.setRect(compasSize+5,compasSize/2,width()-compasSize-5,compasSize/2);

@@ -1,3 +1,8 @@
+/**
+ * @abstract Drone_demo project
+ * @author B.Piranda
+ * @date dec. 2024
+ **/
 #ifndef CANVAS_H
 #define CANVAS_H
 
